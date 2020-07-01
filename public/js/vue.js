@@ -134,9 +134,11 @@ var app = new Vue({
 			if (this.message != '') {
 				let msg = {
 					message: message,
-					debug: false
+					debug: false,
+					weight: "normal"
 				}
 				server.emit('message', JSON.stringify(msg));
+				msg.weight = "bold"
 				this.chat.push(msg);
 			}
 			this.message = '';

@@ -73,6 +73,7 @@
 
 .messages .debug {
     color: #AAA;
+	font-style: italic;
 }
 
 h1 {
