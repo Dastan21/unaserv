@@ -43,7 +43,7 @@ server.on('failure', function(errors){
 	if (errors != null) {
 		errors.forEach(error => {
 			alert(error.message);
-			window.location = window.location.origin;
+			window.location = window.location.origin + "/uno/";
 		});
 	} else {
 		app.show = 'waiting';
