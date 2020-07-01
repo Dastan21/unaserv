@@ -15,7 +15,9 @@ var app = new Vue({
 		users: [],
 		isMaster: false,
 		colors: colors,
-		game: null
+		game: null,
+		message: '',
+		chat: []
 	},
 	watch: {
 		game: function() {
@@ -29,7 +31,7 @@ var app = new Vue({
 	},
 	computed: {
 		roomURL: function() {
-			return window.location.origin + "/uno/?" + this.user.roomId;
+			return window.location.origin + "/?" + this.user.roomId;
 		},
 	},
 	methods: {
@@ -126,6 +128,18 @@ var app = new Vue({
 			if (oldArray.length > newArray.length)
 				return oldArray[i]
 			return newArray[i];
+		},
+		sendMessage() {
+			let message = "<" + this.user.name + "> " + this.message;
+			if (this.message != '') {
+				let msg = {
+					message: message,
+					debug: false
+				}
+				server.emit('message', JSON.stringify(msg));
+				this.chat.push(msg);
+			}
+			this.message = '';
 		}
 	},
 	mounted() {

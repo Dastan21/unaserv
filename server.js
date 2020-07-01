@@ -37,6 +37,10 @@ server.get('/', (req, res) => {
 
 
 io.on("connection", (socket) => {
+	// broadcast message
+	socket.on("message", function(msg) {
+		socket.broadcast.to(socket.user.roomId).emit('message', msg);
+	});
 	// creating a new room
 	socket.on("create_room", function(user) {
 		socket.user = user;

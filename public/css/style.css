@@ -1,0 +1,109 @@
+#game {
+	margin-left: auto;
+	margin-right: auto;
+	display: table;
+}
+
+#game li {
+	list-style-type: none;
+}
+
+/* Chat */
+#chat {
+	height: 100%;
+	width: 20%;
+	position: fixed;
+	z-index: 1;
+	top: 0;
+	right: 0;
+	display: grid;
+	grid-template-rows: 80px auto 50px;
+	background-color: #EEE;
+}
+
+.chat-form {
+	position: fixed;
+    bottom: 0;
+    right: 0;
+	margin: auto;
+	width: 20%;
+    display: flex;
+    box-sizing: border-box;
+    padding: 5px;
+}
+
+.chat-input {
+	border: 0;
+	padding: 10px;
+	width: 100%;
+	outline: 0;
+	margin-right: 10px;
+	border-radius: 5px;
+	background: #ccc;
+}
+
+.chat-button {
+	width: 30%;
+    background-color: #43B581;
+    color: white;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    border-radius: 5px;
+    text-transform: uppercase;
+}
+
+.chat-form .chat-button:hover {
+	background-color: #3A996B;
+}
+
+.messages {
+	margin: 0 10px;
+	overflow: auto;
+}
+
+.unordered-list {
+	padding: 5px;
+}
+
+.messages .list {
+    padding: 5px;
+	overflow: auto;
+}
+
+.messages .debug {
+    color: #AAA;
+}
+
+h1 {
+	text-align: center;
+	text-decoration: underline;
+	text-transform: uppercase;
+}
+
+
+/* Scoreboard */
+#scoreboard {
+	height: 100%;
+	width: 20%;
+	position: fixed;
+	z-index: 1;
+	top: 0;
+	left: 0;
+	background-color: #EEE;
+	overflow-x: hidden;
+}
+
+.scoreboard-box {
+	display: table;
+	margin: 0 auto;
+}
+
+.scoreboard-box .scoreboard-list {
+	text-align: right;
+	padding: 0;
+}
+
+.scoreboard-box .scoreboard-list li {
+	padding: 5px 0;
+}

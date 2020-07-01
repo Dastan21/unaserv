@@ -7,13 +7,17 @@ const server = io("http://ldgr.fr", {
 	reconnectionAttempts: 99999
 });
 
+server.on('message', function(msg){
+	app.chat.push(JSON.parse(msg));
+});
+
 server.on('get_names', function(users){
 	let user = app.arrayCompare(app.users, users, '_id');
 	if (app.game != null) {
 		if (app.users.length > users.length)
-			alert(user.name + " has disconnected");
+			app.chat.push({ message: user.name + " has disconnected", debug: true });
 		else
-			alert(user.name + " has reconnected");
+			app.chat.push({ message: user.name + " has reconnected", debug: true });
 	}
 	app.users = users;
 });
@@ -39,7 +43,7 @@ server.on('failure', function(errors){
 	if (errors != null) {
 		errors.forEach(error => {
 			alert(error.message);
-			window.location = window.location.origin+"/uno";
+			window.location = window.location.origin;
 		});
 	} else {
 		app.show = 'waiting';

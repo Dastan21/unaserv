@@ -3,6 +3,7 @@
 	<head>
 		<meta charset="utf-8">
 		<link rel="icon" href="res/icon.ico">
+		<link rel="stylesheet" href="css/style.css">
 		<title>UNO Online</title>
 		<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 		<script src="js/model.js" charset="utf-8"></script>
@@ -12,32 +13,26 @@
 			<input v-if="show == 'play' || show == 'create'" id="username" class="input" type="text" placeholder="Enter your name" v-model="username">
 			<div v-if="show == 'play' || show == 'create'">
 				<div v-if="show == 'play'">
-					<p>
-						<button @click="joinRoom();">Play</button>
-					</p>
+					<p><button @click="joinRoom();">Play</button></p>
 				</div>
 				<div v-else>
 					<p><button @click="createRoom();">Create room</button></p>
 				</div>
 			</div>
 			<div v-else-if="show == 'waiting'">
-				<p>
-					<button @click="startGame()" :disabled="!isMaster || this.selectedCursor != 'auto'" :style="{cursor: selectedCursor}">Start</button>
-				</p>
-				<ul>
-					<li v-for="(user, i) in users">{{user.name}}<span v-if="i == 0"> - Master</span></li>
-				</ul>
+				<p><button @click="startGame()" :disabled="!isMaster || this.selectedCursor != 'auto'" :style="{cursor: selectedCursor}">Start</button></p>
+				<ul><li v-for="(user, i) in users">{{user.name}}<span v-if="i == 0"> - Master</span></li></ul>
 				<a :href="roomURL">{{roomURL}}</a>
 			</div>
 			<div v-else-if="show == 'playing'">
-				<h2>Players</h2>
+				<h1>Players</h1>
 				<table>
 					<tr>
-						<td v-for="(player, index) in game.round.players">
-							<h3>{{player.name}} | {{game.scores[index]}}</h3>
+						<td v-for="(player, i) in game.round.players">
+							<h3>{{player.name}}</h3>
 							<ol>
 								<li v-for="card in player.hand">
-									<span v-if="player._id == user._id">{{card.type}} - {{card.value}} - {{card.color}} <button v-if="game.round.allowedCard(card) && game.round.turn == index && !game.round.switchcolor" @click="game.play(card); shareGame()">Play this card</button></span>
+									<span v-if="player._id == user._id">{{card.type}} - {{card.value}} - {{card.color}} <button v-if="game.round.allowedCard(card) && game.round.turn == i && !game.round.switchcolor" @click="game.play(card); shareGame()">Play this card</button></span>
 									<span v-else>Uno card</span>
 								</li>
 							</ol>
@@ -52,6 +47,25 @@
 					<button v-if="game.round.drawed" @click="game.round.addTurn(); game.round.drawed = false; shareGame()">End turn</button>
 					<button v-if="game.round.drawtwo == 0" @click="game.round.drawCard(); game.round.drawed = true; shareGame()">Draw a card</button>
 					<button v-else @click="game.round.drawTwoCards(); shareGame()">Draw {{game.round.drawtwo}} cards</button>
+				</div>
+			</div>
+			<div v-if="show == 'waiting' || show == 'playing'">
+				<div id="scoreboard">
+					<h1>Scoreboard</h1>
+					<div class="scoreboard-box">
+						<ul v-if="show == 'playing'">
+							<li v-for="(player, i) in game.players">{{player.name}} | {{game.scores[i]}}</li>
+						</ul>
+					</div>
+				</div>
+				<div id="chat">
+					<h1>Chat</h1>
+					<div class="messages">
+						<ul class="unordered-list">
+							<li class="list" :class="{ debug: msg.debug }" v-for="msg in chat">{{msg.message}}</li>
+						</ul>
+					</div>
+					<form class="chat-form" @submit.prevent="sendMessage()"><input class="chat-input" type=text placeholder="Chat here" v-model="message"></input><input class="chat-button" type="submit" value="Send"></input></form>
 				</div>
 			</div>
 		</main>
