@@ -31,7 +31,7 @@ var app = new Vue({
 	},
 	computed: {
 		roomURL: function() {
-			return window.location.origin + "/?" + this.user.roomId;
+			return window.location.origin + "/uno/?" + this.user.roomId;
 		},
 	},
 	methods: {
