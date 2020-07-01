@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+	<head>
+		<meta charset="utf-8">
+		<link rel="icon" href="res/icon.ico">
+		<title>UNO Online</title>
+		<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+		<script src="js/model.js" charset="utf-8"></script>
+	</head>
+	<body>
+		<main id="game">
+			<input v-if="show == 'play' || show == 'create'" id="username" class="input" type="text" placeholder="Enter your name" v-model="username">
+			<div v-if="show == 'play' || show == 'create'">
+				<div v-if="show == 'play'">
+					<p>
+						<button @click="joinRoom();">Play</button>
+					</p>
+				</div>
+				<div v-else>
+					<p><button @click="createRoom();">Create room</button></p>
+				</div>
+			</div>
+			<div v-else-if="show == 'waiting'">
+				<p>
+					<button @click="startGame()" :disabled="!isMaster || this.selectedCursor != 'auto'" :style="{cursor: selectedCursor}">Start</button>
+				</p>
+				<ul>
+					<li v-for="(user, i) in users">{{user.name}}<span v-if="i == 0"> - Master</span></li>
+				</ul>
+				<a :href="roomURL">{{roomURL}}</a>
+			</div>
+			<div v-else-if="show == 'playing'">
+				<h2>Players</h2>
+				<table>
+					<tr>
+						<td v-for="(player, index) in game.round.players">
+							<h3>{{player.name}} | {{game.scores[index]}}</h3>
+							<ol>
+								<li v-for="card in player.hand">
+									<span v-if="player._id == user._id">{{card.type}} - {{card.value}} - {{card.color}} <button v-if="game.round.allowedCard(card) && game.round.turn == index && !game.round.switchcolor" @click="game.play(card); shareGame()">Play this card</button></span>
+									<span v-else>Uno card</span>
+								</li>
+							</ol>
+						</td>
+					</tr>
+				</table>
+				<span v-if="game.round.switchcolor && game.players[game.round.turn]._id == user._id">Choose a color : <button v-for="color in colors" @click="game.round.chooseColor(color); shareGame()">{{color}}</button></span>
+				<h2>Discard pile</h2>
+				<span>{{game.round.deck.discardtop.type}} - {{game.round.deck.discardtop.value}} - {{game.round.deck.discardtop.color}}</span>
+				<h2>Deck</h2>
+				<div v-if="!game.round.switchcolor && game.players[game.round.turn]._id == user._id">
+					<button v-if="game.round.drawed" @click="game.round.addTurn(); game.round.drawed = false; shareGame()">End turn</button>
+					<button v-if="game.round.drawtwo == 0" @click="game.round.drawCard(); game.round.drawed = true; shareGame()">Draw a card</button>
+					<button v-else @click="game.round.drawTwoCards(); shareGame()">Draw {{game.round.drawtwo}} cards</button>
+				</div>
+			</div>
+		</main>
+		<script src="https://cdn.jsdelivr.net/npm/socket.io-client@2/dist/socket.io.js"></script>
+		<script src="js/vue.js" charset="utf-8"></script>
+		<script src="js/client.js" charset="utf-8"></script>
+	</body>
+</html>
