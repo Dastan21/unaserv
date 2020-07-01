@@ -62,7 +62,7 @@
 					<h1>Chat</h1>
 					<div class="messages">
 						<ul class="unordered-list">
-							<li class="list" :class="{ debug: msg.debug }" :style="{ font-weight: msg.weight }" v-for="msg in chat">{{msg.message}}</li>
+							<li class="list" :class="{ debug: msg.debug }" :style="{ fontWeight: msg.weight }" v-for="msg in chat">{{msg.message}}</li>
 						</ul>
 					</div>
 					<form class="chat-form" @submit.prevent="sendMessage()"><input class="chat-input" type=text placeholder="Chat here" v-model="message"></input><input class="chat-button" type="submit" value="Send"></input></form>
