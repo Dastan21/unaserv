@@ -30,7 +30,7 @@
 					<tr>
 						<td v-for="(player, i) in game.round.players">
 							<h3>{{player.name}}</h3>
-							<ol>
+							<ol class="players-cards">
 								<li v-for="card in player.hand">
 									<!-- <span v-if="player._id == user._id"><img class="card" :src="'img/cards/'+card.type+'_'+card.color+'_'+card.value+'.png'" :alt="card.type+' - '+card.value+' - '+card.color"><button v-if="game.round.allowedCard(card) && game.round.turn == i && !game.round.switchcolor" @click="game.play(card); shareGame()">Play this card</button></span> -->
 									<span v-if="player._id == user._id"><img class="card owner" :class="{ playable: isPlayable(card, i) }" :src="'img/cards/'+card.type+'_'+card.color+'_'+card.value+'.png'" :alt="card.type+' - '+card.value+' - '+card.color" @click="if (isPlayable(card, i)) { game.play(card); shareGame(); }"></span>

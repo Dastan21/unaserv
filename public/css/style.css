@@ -126,3 +126,7 @@ h1 {
   opacity: 1.0;
   filter: none;
 }
+
+.players-cards {
+	display: inline;
+}
