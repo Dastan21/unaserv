@@ -32,7 +32,7 @@ var app = new Vue({
 	computed: {
 		roomURL: function() {
 			return window.location.origin + "/uno/?" + this.user.roomId;
-		},
+		}
 	},
 	methods: {
 		setUsername() { this.setCookie("username", this.username); },
@@ -142,6 +142,9 @@ var app = new Vue({
 				this.chat.push(msg);
 			}
 			this.message = '';
+		},
+		isPlayable(card, i) {
+			return this.game.round.allowedCard(card) && this.game.round.turn == i && !this.game.round.switchcolor;
 		}
 	},
 	mounted() {

@@ -3,7 +3,7 @@
 // https://en.wikipedia.org/wiki/Uno_(card_game)
 
 const colors = [ "red", "green", "yellow", "blue" ];
-const types = [ "normal", "reverse", "skip", "draw two", "wild", "wild draw four" ];
+const types = [ "normal", "reverse", "skip", "draw-two", "wild", "wild-draw-four" ];
 
 class Card {
 	constructor(value, color, type){
