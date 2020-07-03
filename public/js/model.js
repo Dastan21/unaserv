@@ -4,6 +4,7 @@
 
 const colors = [ "red", "green", "yellow", "blue" ];
 const types = [ "normal", "reverse", "skip", "draw-two", "wild", "wild-draw-four" ];
+var defaultUsernames = ["Adrien","Albin","Alexandrin","Ancelin","Antonin","Aubin","Augustin","Baptistin","Benjamin","Cassien","Celestin","Cesarin","Colin","Corentin","Constantin","Crispin","Fabien","Faustin","Firmin","Florentin","Gabin","Honorin","Hugolin","Jasmin","Josquin","Julien","Justin","Leontin","Lubin","Lucien","Marcellin","Marin","Martin","Mathurin","Maximin","Merlin","Paulin","Quentin","Robin","Saturnin","Seraphin","Severin","Valentin","Zephyrin"];
 
 class Card {
 	constructor(value, color, type){

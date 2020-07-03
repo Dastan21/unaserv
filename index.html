@@ -4,12 +4,13 @@
 		<meta charset="utf-8">
 		<link rel="icon" href="img/icon.ico">
 		<link rel="stylesheet" href="css/style.css">
+		<link href="https://fonts.googleapis.com/css2?family=Cambay&display=swap" rel="stylesheet">
 		<title>UNO Online</title>
 		<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 		<script src="js/model.js" charset="utf-8"></script>
 	</head>
 	<body>
-		<main id="game">
+		<main id="uno">
 			<input v-if="show == 'play' || show == 'create'" id="username" class="input" type="text" placeholder="Enter your name" v-model="username">
 			<div v-if="show == 'play' || show == 'create'">
 				<div v-if="show == 'play'">
@@ -30,13 +31,12 @@
 					<tr>
 						<td v-for="(player, i) in game.round.players">
 							<h3>{{player.name}}</h3>
-							<ol class="players-cards">
+							<ul class="players-cards">
 								<li v-for="card in player.hand">
-									<!-- <span v-if="player._id == user._id"><img class="card" :src="'img/cards/'+card.type+'_'+card.color+'_'+card.value+'.png'" :alt="card.type+' - '+card.value+' - '+card.color"><button v-if="game.round.allowedCard(card) && game.round.turn == i && !game.round.switchcolor" @click="game.play(card); shareGame()">Play this card</button></span> -->
 									<span v-if="player._id == user._id"><img class="card owner" :class="{ playable: isPlayable(card, i) }" :src="'img/cards/'+card.type+'_'+card.color+'_'+card.value+'.png'" :alt="card.type+' - '+card.value+' - '+card.color" @click="if (isPlayable(card, i)) { game.play(card); shareGame(); }"></span>
 									<span v-else><img class="card" src="img/cards/back.png" alt="UNO Card"></span>
 								</li>
-							</ol>
+							</ul>
 						</td>
 					</tr>
 				</table>
@@ -63,7 +63,7 @@
 					<h1>Chat</h1>
 					<div class="messages">
 						<ul class="unordered-list">
-							<li class="list" :class="{ debug: msg.debug }" :style="{ fontWeight: msg.weight }" v-for="msg in chat">{{msg.message}}</li>
+							<li class="list" :class="{ debug: msg.debug }" v-for="msg in chat"><span :style="{ fontWeight: msg.weight }">{{msg.username}}</span>{{msg.message}}</li>
 						</ul>
 					</div>
 					<form class="chat-form" @submit.prevent="sendMessage()"><input class="chat-input" type=text placeholder="Chat here" v-model="message"></input><input class="chat-button" type="submit" value="Send"></input></form>
