@@ -5,6 +5,7 @@ const server = io("http://ldgr.fr", {
 	reconnectionDelayMax: 5000,
 	reconnectionAttempts: 99999
 });
+// const server = io();
 
 /* Index vue */
 new Vue({
@@ -12,7 +13,7 @@ new Vue({
 	data: {
 		username: '',
 		show: 'create',
-		selectedCursor: 'auto',
+		showInput: 'Create room',
 		user: {
 			_id: '',
 			name: '',
@@ -71,13 +72,18 @@ new Vue({
 		});
 	},
 	watch: {
+		show: function() {
+			if (this.show == 'play')
+				this.showInput = 'Play';
+			else
+				this.showInput = 'Create room';
+		},
 		game: function() {
 			if (this.game != null)
 				this.show = 'playing';
 		},
 		"users.length": function() {
 			this.isMaster = this.indexOf(this.users, this.user, '_id') == 0;
-			this.selectedCursor = !this.isMaster || this.users.length < 2 ? 'not-allowed' : 'auto';
 		}
 	},
 	computed: {
@@ -110,6 +116,12 @@ new Vue({
 				if (array[i][key] == obj[key]) return i;
 			}
 			return -1;
+		},
+		chooseUsername() {
+			if (this.show == 'create')
+				this.createRoom();
+			else
+				this.joinRoom();
 		},
 		createRoom() {
 			this.setUsername();
@@ -195,7 +207,34 @@ new Vue({
 			this.message = '';
 		},
 		isPlayable(card, i) {
-			return this.game.round.allowedCard(card) && this.game.round.turn == i && !this.game.round.switchcolor;
+			if (card == 'discardpile')
+				return !this.game.round.switchcolor && this.game.players[this.game.round.turn]._id == this.user._id;
+			if (card == 'playing')
+				return this.game.round.turn == i;
+			return this.game.round.allowedCard(card) && this.game.round.turn == i;
+		},
+		cardData(player, card) {
+			let data = {
+				src: 'img/cards/back.png',
+				alt: 'UNO Card'
+			};
+			if (player._id == this.user._id) {
+				data.src = 'img/cards/'+card.type+'_'+card.color+'_'+card.value+'.png';
+				data.alt = card.type+' - '+card.value+' - '+card.color;
+			}
+			return data;
+		},
+		altCard(player) {
+			if (player._id == this.user._id)
+				return 'img/cards/'+card.type+'_'+card.color+'_'+card.value+'.png';
+			return 'img/cards/back.png';
+		},
+		drawCard() {
+			if (!this.game.round.switchcolor && this.game.players[this.game.round.turn]._id == this.user._id) {
+				this.game.round.drawCard();
+				this.game.round.drawed = true;
+				this.shareGame();
+			}
 		}
 	},
 	mounted() {

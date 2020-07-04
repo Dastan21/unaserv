@@ -1,4 +1,4 @@
-html {
+html, body {
 	font-family: 'Marmelad', sans-serif;
 }
 
@@ -48,8 +48,6 @@ html {
 
 .chat-button {
 	width: 30%;
-    background-color: #43B581;
-    color: white;
     border: none;
     padding: 10px;
     cursor: pointer;
@@ -114,21 +112,63 @@ h1 {
 }
 
 .card {
-	height: 192px;
-	/* border: 1px black solid;
-	border-radius: 8px; */
-	transition: 0.2s;
+	position: relative;
+	margin: auto;
+	height: 128px;
+	transition: 0.1s;
 }
 
-.card.owner:hover {
+.card.playing:hover {
   transform: scale(1.1);
-  filter: grayscale(90%);
+  filter: grayscale(95%);
 }
 
-.card.owner.playable:hover {
+.card.playing.playable:hover {
   filter: none;
 }
 
-.players-cards {
-	display: inline;
+.button {
+	font-family: 'Marmelad';
+	font-size: 15px;
+	text-transform: uppercase;
+	font-weight: bold;
+	padding: 10px 20px;
+	color: #FFDE16;
+	background-color: #ED1C24;
+	border: none;
+	border-radius: 30px;
+	cursor: auto;
+	transition: 0.2s;
+}
+
+.button:hover, .button:disabled {
+	color: #FFE032;
+	background-color: #CC1821;
+}
+
+.button:disabled {
+	cursor: not-allowed;
+	filter: grayscale(50%);
+}
+
+#table {
+	margin: auto 21%;
+}
+
+#hands {
+}
+
+#hand {
+
+}
+
+#discard-pile {
+	position: absolute;
+	top: 40%;
+	left: 50%;
+	margin: -64px 0 0 -41px;
+}
+
+#discard-top {
+
 }

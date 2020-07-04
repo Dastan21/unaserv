@@ -11,43 +11,38 @@
 	</head>
 	<body>
 		<main id="uno">
-			<input v-if="show == 'play' || show == 'create'" id="username" class="input" type="text" placeholder="Enter your name" v-model="username">
 			<div v-if="show == 'play' || show == 'create'">
-				<div v-if="show == 'play'">
-					<p><button @click="joinRoom();">Play</button></p>
-				</div>
-				<div v-else>
-					<p><button @click="createRoom();">Create room</button></p>
-				</div>
+				<form @submit.prevent="chooseUsername()">
+					<input class="input" type="text" placeholder="Enter your name" v-model="username">
+					<input class="button" type="submit" :value="showInput"></input>
+				</form>
 			</div>
 			<div v-else-if="show == 'waiting'">
-				<p><button @click="startGame()" :disabled="!isMaster || this.selectedCursor != 'auto'" :style="{cursor: selectedCursor}">Start</button></p>
+				<p><button class="button" @click="startGame()" :disabled="!isMaster || users.length < 2">Start</button></p>
 				<ul><li v-for="(user, i) in users">{{user.name}}<span v-if="i == 0"> - Master</span></li></ul>
 				<a :href="roomURL">{{roomURL}}</a>
 			</div>
-			<div v-else-if="show == 'playing'">
+			<div id="table" v-else-if="show == 'playing'">
 				<h1>Players</h1>
-				<table>
-					<tr>
-						<td v-for="(player, i) in game.round.players">
+				<table id="hands">
+					<tr v-for="(player, i) in game.round.players">
+						<td>
 							<h3>{{player.name}}</h3>
-							<ul class="players-cards">
-								<li v-for="card in player.hand">
-									<span v-if="player._id == user._id"><img class="card owner" :class="{ playable: isPlayable(card, i) }" :src="'img/cards/'+card.type+'_'+card.color+'_'+card.value+'.png'" :alt="card.type+' - '+card.value+' - '+card.color" @click="if (isPlayable(card, i)) { game.play(card); shareGame(); }"></span>
-									<span v-else><img class="card" src="img/cards/back.png" alt="UNO Card"></span>
-								</li>
-							</ul>
+							<span v-for="card in player.hand">
+								<img class="card" :class="{ playing: isPlayable('playing', i), playable: isPlayable(card, i) }" :src="cardData(player, card).src" :alt="cardData(player, card).alt" @click="if (isPlayable(card, i)) { game.play(card); shareGame(); }">
+							</span>
 						</td>
 					</tr>
 				</table>
-				<span v-if="game.round.switchcolor && game.players[game.round.turn]._id == user._id">Choose a color : <button v-for="color in colors" @click="game.round.chooseColor(color); shareGame()">{{color}}</button></span>
+				<span v-if="game.round.switchcolor && game.players[game.round.turn]._id == user._id">Choose a color : <button class="button" v-for="color in colors" @click="game.round.chooseColor(color); shareGame()">{{color}}</button></span>
 				<h2>Discard pile</h2>
-				<img class="card" :src="'img/cards/'+game.round.deck.discardtop.type+'_'+game.round.deck.discardtop.color+'_'+game.round.deck.discardtop.value+'.png'" :alt="game.round.deck.discardtop.type+' - '+game.round.deck.discardtop.value+' - '+game.round.deck.discardtop.color">
+				<img id="discard-top" class="card" :src="'img/cards/'+game.round.deck.discardtop.type+'_'+game.round.deck.discardtop.color+'_'+game.round.deck.discardtop.value+'.png'" :alt="game.round.deck.discardtop.type+' - '+game.round.deck.discardtop.value+' - '+game.round.deck.discardtop.color">
 				<h2>Deck</h2>
-				<div v-if="!game.round.switchcolor && game.players[game.round.turn]._id == user._id">
-					<button v-if="game.round.drawed" @click="game.round.addTurn(); game.round.drawed = false; shareGame()">End turn</button>
-					<img class="card owner playable" src="img/cards/back.png" alt="UNO Card" v-if="game.round.drawtwo == 0" @click="game.round.drawCard(); game.round.drawed = true; shareGame()">
-					<button v-else @click="game.round.drawTwoCards(); shareGame()"><img class="card" src="img/cards/back.png" alt="UNO Card"> x{{game.round.drawtwo}}</button>
+				<!-- v-if="!game.round.switchcolor && game.players[game.round.turn]._id == user._id" -->
+				<div>
+					<button class="button" v-if="game.round.drawed" @click="game.round.addTurn(); game.round.drawed = false; shareGame()">End turn</button>
+					<img id="discard-pile" class="card" :class="{ playing: isPlayable('discardpile', null), playable: isPlayable('discardpile', null) }" src="img/cards/back.png" alt="UNO Card" v-if="game.round.drawtwo == 0" @click="drawCard()">
+					<button class="button" v-else @click="game.round.drawTwoCards(); shareGame()"><img class="card" src="img/cards/back.png" alt="UNO Card"> x{{game.round.drawtwo}}</button>
 				</div>
 			</div>
 			<div v-if="show == 'waiting' || show == 'playing'">
@@ -66,7 +61,7 @@
 							<li class="list" :class="{ debug: msg.debug }" v-for="msg in chat"><span :style="{ fontWeight: msg.weight }">{{msg.username}}</span>{{msg.message}}</li>
 						</ul>
 					</div>
-					<form class="chat-form" @submit.prevent="sendMessage()"><input class="chat-input" type=text placeholder="Chat here" v-model="message"></input><input class="chat-button" type="submit" value="Send"></input></form>
+					<form class="chat-form" @submit.prevent="sendMessage()"><input class="chat-input" type="text" placeholder="Chat here" v-model="message"></input><input class="button chat-button" type="submit" value="Send"></input></form>
 				</div>
 			</div>
 		</main>
