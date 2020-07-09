@@ -1,11 +1,11 @@
-// const server = io("http://ldgr.fr", {
-// 	path:'/uno/socket.io',
-// 	reconnection: true,
-// 	reconnectionDelay: 1000,
-// 	reconnectionDelayMax: 5000,
-// 	reconnectionAttempts: 99999
-// });
-const server = io();
+const server = io("http://ldgr.fr", {
+	path:'/uno/socket.io',
+	reconnection: true,
+	reconnectionDelay: 1000,
+	reconnectionDelayMax: 5000,
+	reconnectionAttempts: 99999
+});
+// const server = io();
 
 /* Index vue */
 var vue = new Vue({
