@@ -90,7 +90,7 @@ class Round {
 				player.takeCard(this.deck.pickCard());
 		});
 		let firstcard = this.deck.pickCard();
-		while (firstcard.type == "wild draw four"){
+		while (firstcard.type == "wild-draw-four"){
 			this.deck.cards.push(firstcard);
 			this.deck.shuffle();
 			firstcard = this.deck.pickCard();
@@ -104,7 +104,7 @@ class Round {
 			case "reverse":
 				this.order *= -1;
 				break;
-			case "draw two":
+			case "draw-two":
 				this.drawtwo += 2;
 				break;
 			case "wild":
@@ -130,13 +130,13 @@ class Round {
 					else
 						this.order *= -1;
 					break;
-				case "draw two":
+				case "draw-two":
 					this.drawtwo += 2;
 					break;
 				case "wild":
 					this.switchcolor = true;
 					break;
-				case "wild draw four":
+				case "wild-draw-four":
 					this.switchcolor = true;
 					this.drawtwo += 4;
 			}
@@ -146,11 +146,11 @@ class Round {
 
 	// test if the card can be played
 	allowedCard(card){
-		if ((card.type != "draw two" && card.type != "wild draw four" && this.drawtwo > 0) || (card.type == "draw two" && this.deck.discardtop.type == "wild draw four")) return false;
+		if ((card.type != "draw-two" && card.type != "wild-draw-four" && this.drawtwo > 0) || (card.type == "draw-two" && this.deck.discardtop.type == "wild-draw-four" && this.drawtwo > 0)) return false;
 		if ((card.value == this.deck.discardtop.value && card.value < 10) ||
 			(card.color == this.deck.discardtop.color) ||
 			(card.type == this.deck.discardtop.type && card.type != "normal") ||
-			(card.type == "wild draw four" && !this.players[this.turn].hasColor(this.deck.discardtop.color)) ||
+			(card.type == "wild-draw-four" && !this.players[this.turn].hasColor(this.deck.discardtop.color)) ||
 			(card.type == "wild")) return true;
 		return false;
 	}

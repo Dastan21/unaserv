@@ -1,14 +1,14 @@
-const server = io("http://ldgr.fr", {
-	path:'/uno/socket.io',
-	reconnection: true,
-	reconnectionDelay: 1000,
-	reconnectionDelayMax: 5000,
-	reconnectionAttempts: 99999
-});
-// const server = io();
+// const server = io("http://ldgr.fr", {
+// 	path:'/uno/socket.io',
+// 	reconnection: true,
+// 	reconnectionDelay: 1000,
+// 	reconnectionDelayMax: 5000,
+// 	reconnectionAttempts: 99999
+// });
+const server = io();
 
 /* Index vue */
-new Vue({
+var vue = new Vue({
 	el: "#uno",
 	data: {
 		username: '',
@@ -207,11 +207,7 @@ new Vue({
 			this.message = '';
 		},
 		isPlayable(card, i) {
-			if (card == 'discardpile')
-				return !this.game.round.switchcolor && this.game.players[this.game.round.turn]._id == this.user._id;
-			if (card == 'playing')
-				return this.game.round.turn == i;
-			return this.game.round.allowedCard(card) && this.game.round.turn == i;
+			return this.game.round.allowedCard(card) && this.game.round.turn == this.indexOf(this.game.players, this.user, '_id') && this.game.round.turn == i;
 		},
 		cardData(player, card) {
 			let data = {
@@ -229,12 +225,33 @@ new Vue({
 				return 'img/cards/'+card.type+'_'+card.color+'_'+card.value+'.png';
 			return 'img/cards/back.png';
 		},
-		drawCard() {
+		drawCards() {
 			if (!this.game.round.switchcolor && this.game.players[this.game.round.turn]._id == this.user._id) {
-				this.game.round.drawCard();
-				this.game.round.drawed = true;
+				if (this.game.round.drawtwo > 0)
+					this.game.round.drawTwoCards();
+				else {
+					this.game.round.drawCard();
+					this.game.round.drawed = true;
+				}
 				this.shareGame();
 			}
+		},
+		getCardDatas(n, i, p) {
+			let data = {
+				dx: 0,
+				dy: 0,
+				a: 0
+			};
+			let angle = 48.0/26.0*(0.5*n-1)+12;
+			if (angle > 50) angle = 50;
+			// console.log(this.game.players[i]);
+			if (this.game.players[p]._id != this.user._id) angle = 12;
+			angle = Math.PI*angle/180.0;
+			let h = 2000;
+			data.a = -angle/2+angle/(n+1)*(i+1);
+			data.dx = h*Math.sin(0.5*data.a);
+			data.dy = -h*(Math.cos(0.5*data.a)-1);
+			return data;
 		}
 	},
 	mounted() {
@@ -247,220 +264,3 @@ new Vue({
 		// history.pushState('', '', window.location.origin + "/?coucou");
 	}
 });
-
-// new Vue({
-// 	el: "#uno",
-// 	data: {
-// 		username: '',
-// 		show: 'create',
-// 		selectedCursor: 'auto',
-// 		user: {
-// 			_id: '',
-// 			name: '',
-// 			roomId: ''
-// 		},
-// 		users: [],
-// 		isMaster: false,
-// 		colors: colors,
-// 		game: null
-// 	},
-// 	watch: {
-// 		game: function() {
-// 			if (this.game != null)
-// 				this.show = 'playing';
-// 		},
-// 		"users.length": function() {
-// 			this.isMaster = this.indexOf(this.users, this.user, '_id') == 0;
-// 			this.selectedCursor = !this.isMaster || this.users.length < 2 ? 'not-allowed' : 'auto';
-// 		}
-// 	},
-// 	computed: {
-// 		roomURL: function() {
-// 			return window.location.origin + "/uno/?" + this.user.roomId;
-// 		}
-// 	},
-// 	methods: {
-// 		setUsername() { this.setCookie("username", this.username); },
-// 		getUsername() {
-// 			let name = this.username;
-// 			if (name == '')
-// 				name = defaultUsernames[Math.floor(Math.random() * defaultUsernames.length)];
-// 			return name;
-// 		},
-// 		setCookie(name, value) { document.cookie = name+"="+encodeURIComponent(value); },
-// 		getCookie(name) {
-// 			var cookieArr = document.cookie.split("; ");
-//
-// 			var cookiePair = "";
-// 			for (let i = 0; i < cookieArr.length; i++) {
-// 				cookiePair = cookieArr[i].split("=");
-// 				if (cookiePair[0] == name)
-// 					return decodeURIComponent(cookiePair[1]);
-// 			}
-// 			return null;
-// 		},
-// 		indexOf(array, obj, key) {
-// 			for (let i = 0; i < array.length; i++) {
-// 				if (array[i][key] == obj[key]) return i;
-// 			}
-// 			return -1;
-// 		},
-// 		createRoom() {
-// 			this.setUsername();
-// 			this.user.roomId = Math.random().toString(36).slice(2,15);
-// 			this.user.name = this.getUsername();
-// 			this.users.push(this.user);
-// 			server.emit('create_room', this.user);
-// 			this.users = [ this.user ];
-// 			this.show = 'waiting';
-// 		},
-// 		joinRoom() {
-// 			this.setUsername();
-// 			this.user.name = this.getUsername();
-// 			server.emit('join_room', this.user);
-// 			server.emit('update_game', this.game);
-// 		},
-// 		startGame() {
-// 			let players = [];
-// 			this.users.forEach(user => {
-// 				players.push(new Player(user._id, user.name));
-// 			});
-// 			this.game = new Game(this.user.roomId, players);
-// 			this.shareGame();
-// 		},
-// 		updateGame(game) {
-// 			for (var keyGame in game) {
-// 				if (game.hasOwnProperty(keyGame)) {
-// 					if (keyGame == "players") {
-// 						this.game.players.forEach((player, i) => {
-// 							for (var keyPlayer in player) {
-// 								if (player.hasOwnProperty(keyPlayer)) {
-// 									player[keyPlayer] = game.players[i][keyPlayer];
-// 								}
-// 							}
-// 						});
-// 					} else if (keyGame == "round") {
-// 						for (var keyRound in game.round) {
-// 							if (game.round.hasOwnProperty(keyRound)) {
-// 								if (keyRound == "deck") {
-// 									for (var keyDeck in game.round.deck) {
-// 										if (game.round.deck.hasOwnProperty(keyDeck)) {
-// 											this.game.round.deck[keyDeck] = game.round.deck[keyDeck];
-// 										}
-// 									}
-// 								} else if (keyRound == "players") {
-// 									this.game.round.players = this.game.players;
-// 								} else
-// 									this.game.round[keyRound] = game.round[keyRound];
-// 							}
-// 						}
-// 					} else {
-// 						this.game[keyGame] = game[keyGame];
-// 					}
-// 				}
-// 			}
-// 		},
-// 		shareGame() {
-// 			server.emit('update_game', this.game);
-// 		},
-// 		arrayCompare(oldArray, newArray, key) {
-// 			let i = 0;
-// 			if (oldArray.length == newArray.length)
-// 				return null;
-// 			while (i < oldArray.length && i < newArray.length && oldArray[i][key] == newArray[i][key]) {
-// 				i++;
-// 			}
-// 			if (oldArray.length > newArray.length)
-// 				return oldArray[i]
-// 			return newArray[i];
-// 		},
-// 		isPlayable(card, i) {
-// 			return this.game.round.allowedCard(card) && this.game.round.turn == i && !this.game.round.switchcolor;
-// 		}
-// 	},
-// 	mounted() {
-// 		this.user._id = this.getCookie("_id");
-// 		if (this.user._id == undefined) this.setCookie("_id", Math.random().toString(36).slice(2,15));
-// 		this.username = this.getCookie("username");
-// 		if (this.username == null) this.username = '';
-// 		this.user.roomId = window.location.search.slice(1);
-// 		if (this.user.roomId != '') this.show = 'play';
-// 		// history.pushState('', '', window.location.origin + "/?coucou");
-// 	}
-// });
-
-
-// Vue.component("chat", {
-// 	data: function() {
-// 		return {
-// 			message: '',
-// 			chat: []
-// 		}
-// 	},
-// 	props: [ 'username' ],
-// 	template: `
-// 	<div>\
-// 		<h1>Chat</h1>\
-// 		<div class="messages">\
-// 			<ul class="unordered-list">\
-// 				<li class="list" :class="{ debug: msg.debug }" :style="{ fontWeight: msg.weight }" v-for="msg in chat">{{msg.message}}</li>\
-// 			</ul>\
-// 		</div>\
-// 		<form class="chat-form" @submit.prevent="sendMessage()"><input class="chat-input" type=text placeholder="Chat here" v-model="message"></input><input class="chat-button" type="submit" value="Send"></input></form>\
-// 	</div>\
-// 	`,
-// 	methods: {
-// 		sendMessage() {
-// 			let message = "<" + this.username + "> " + this.message;
-// 			if (this.message != '') {
-// 				let msg = {
-// 					message: message,
-// 					debug: false,
-// 					weight: "normal"
-// 				}
-// 				server.emit('message', JSON.stringify(msg));
-// 				msg.weight = "bold"
-// 				this.chat.push(msg);
-// 			}
-// 			this.message = '';
-// 		}
-// 	}
-// });
-//
-//
-// Vue.component("scoreboard", {
-// 	data: function() {
-// 		return {
-// 			message: '',
-// 			chat: []
-// 		}
-// 	},
-// 	props: [ 'users', 'scores' ],
-// 	template: `
-// 	<div>\
-// 		<h1>Chat</h1>\
-// 		<div class="messages">\
-// 		<ul class="unordered-list">\
-// 		<li class="list" :class="{ debug: msg.debug }" :style="{ fontWeight: msg.weight }" v-for="msg in chat">{{msg.message}}</li>\
-// 		</ul>\
-// 		</div>\
-// 		<form class="chat-form" @submit.prevent="sendMessage()"><input class="chat-input" type=text placeholder="Chat here" v-model="message"></input><input class="chat-button" type="submit" value="Send"></input></form>\
-// 	</div>\
-// 	`,
-// 	methods: {
-// 		sendMessage() {
-// 			let message = "<" + this.username + "> " + this.message;
-// 			if (this.message != '') {
-// 				let msg = {
-// 					message: message,
-// 					debug: false,
-// 					weight: "normal"
-// 				}
-// 				server.emit('message', JSON.stringify(msg));
-// 				msg.weight = "bold"
-// 				this.chat.push(msg);
-// 			}
-// 			this.message = '';
-// 		}
-// 	}
-// });
