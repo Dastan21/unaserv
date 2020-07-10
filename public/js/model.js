@@ -229,5 +229,5 @@ class Game {
 
 
 /****** TESTING ******/
-var testPlayers = [ new Player(null, "Honorin"), new Player(null, "Saturnin"), new Player(null, "Marcellin") ];
-var testGame = new Game(null, testPlayers);
+// var testPlayers = [ new Player(null, "Honorin"), new Player(null, "Saturnin"), new Player(null, "Marcellin") ];
+// var testGame = new Game(null, testPlayers);
