@@ -125,7 +125,7 @@ const changelogs = [
 					"Added 'Report bugs' button (linked to github issues page)"
 				],
 				french: [
-					"Ajouté un bouton 'Report bugs' button (linked to github issues page)"
+					"Ajouté un bouton 'Report bugs' (lié à la page des problèmes sur github)"
 				]
 			},
 			bugs: {
