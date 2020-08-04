@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+	<head>
+		<meta charset="utf-8">
+		<link rel="icon" href="img/icon.ico">
+		<link rel="stylesheet" href="css/style.css">
+		<link href="https://fonts.googleapis.com/css2?family=Marmelad&display=swap" rel="stylesheet">
+		<title>UNA Online</title>
+		<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+	</head>
+	<body>
+		<main id="uno">
+			<div v-if="show.includes('room')">
+				<form class="room" @submit.prevent="chooseUsername()">
+					<input class="input" type="text" :placeholder="translate[language].room_usernamePlaceholder" v-model="username">
+					<input class="button" type="submit" :value="translate[language]['room_'+showInput]"></input>
+				</form>
+			</div>
+			<div class="waiting" v-else-if="show === 'game-waiting'">
+				<div class="options">
+					<h2>{{translate[language].options_title}}</h2>
+					<div class="gamemodes">
+						<label for="gamemodes">{{translate[language].options_gamemode}}</label>
+						<select id="gamemodes" v-model="gamemode" :disabled="!isLeader">
+							<option v-for="gamemode in options.gamemodes" :value="gamemode[language].id">{{gamemode[language].name}}</option>
+						</select>
+						<div class="description">{{options.gamemodes[gamemode][language].description}}</div>
+						<div v-if="gamemode === 'quick'">
+							<label for="roundNumber">{{translate[language].options_rounds}}</label>
+							<select id="roundNumber" v-model="maxRound" :disabled="!isLeader">
+								<option value="1">1</option>
+								<option value="3">3</option>
+								<option value="5">5</option>
+								<option value="10">10</option>
+								<option value="20">20</option>
+								<option value="30">30</option>
+							</select>
+						</div>
+						<div v-else-if="gamemode === 'score'"></div>
+						<div v-else-if="gamemode === 'reverse-score'"></div>
+						<div v-else="gamemode === 'team'"></div>
+					</div>
+					<hr>
+					<div class="rules">
+						<label class="rule" :for="'rule-'+rule[language].id" v-for="rule in options.rules">{{rule[language].name}}<input :id="'rule-'+rule[language].id" type="checkbox" v-model="rulesList[rule[language].id]" :disabled="!isLeader">
+					</div>
+				</div>
+				<p><button class="button" @click="startGame()" :disabled="!isLeader || users.length < 2">{{translate[language].room_start}}</button></p>
+				<hr>
+				<h2>{{translate[language].room_playersList}}</h2>
+				<ol class="players-list"><li v-for="(user, i) in users">{{user.name}}<span v-if="i == 0"> - {{translate[language].room_leader}}</span></li></ol>
+				<div class="invite">{{translate[language].room_invite}} <a :href="roomURL">{{roomURL}}</a></div>
+			</div>
+			<div id="game" v-else-if="show.includes('game')">
+				<div id="table">
+					<div class="player" :class="{ playing: game.round.turn == indexPlayer }" v-for="(player, indexPlayer) in game.round.players" :style="{ transform: 'rotate('+getTableData(indexPlayer).a+'deg) translateX('+getTableData(indexPlayer).dx+'vh)' }">
+						<div class="player-content" :style="{ transform: 'rotate('+(-getTableData(indexPlayer).a)+'deg) translateY(-64px)' }">
+							<span><h3 class="player-name">{{player.name}}</h3><button class="button" v-if="player._id != user._id" @click="contestUno(indexPlayer)" :disabled="!canContestUno()">{{translate[language].game_contest}}</button></span>
+							<div class="cards">
+								<div class="card" :class="{ playable: cardPlayable(card, indexPlayer) }" :style="{ transform: 'translate('+getCardPosData(player.hand.length,indexCard,indexPlayer).dx+'px, '+getCardPosData(player.hand.length,indexCard,indexPlayer).dy+'px) rotate('+getCardPosData(player.hand.length,indexCard,indexPlayer).a+'rad)' }" v-for="(card, indexCard) in player.hand" @click="play(card, indexPlayer)"><img class="card-img" @dragstart="dragStart(card)" @dragend="dragEnd()" :src="getCardImgData(player, card).src" :alt="getCardImgData(player, card).alt"></div>
+							</div>
+						</div>
+					</div>
+					<div id="decks">
+						<div class="discard card" :class="{ dragging: draggingCard != null }"><img class="card-img" @dragover.prevent @drop="drop()" :src="'img/cards/'+game.round.deck.discardtop.type+'_'+game.round.deck.discardtop.color+'_'+game.round.deck.discardtop.value+'.svg'" :alt="game.round.deck.discardtop.type+' - '+game.round.deck.discardtop.value+' - '+game.round.deck.discardtop.color"></div>
+						<div class="deck card" :class="{ playable: canDraw() }" v-if="game.round.deck.cards.length > 0" @click="drawCards()"><img class="card-img" src="img/cards/back.svg" alt="UNA? Card"></div>
+					</div>
+					<div class="choice">
+						<span v-if="choosing()">{{translate[language].game_chooseColor}} <button class="button" v-for="color in colors" @click="choose('color', color)">{{color}}</button></span>
+						<span v-if="!choosing()"><button class="choice button" @click="endTurn()" :disabled="!canEndTurn()">{{translate[language].game_endTurn}}</button></span>
+						<span v-if="!choosing()"><button class="choice button" @click="sayUno()" :disabled="!canSayUno()">UNA!</button></span>
+					</div>
+				</div>
+			</div>
+			<div v-if="show.includes('game')">
+				<scoreboard id="scoreboard" :game="game" :show="show" :language="language" :translate="translate"></scoreboard>
+				<chat id="chat" ref="chatComponent" :user="user" :language="language" :translate="translate"></chat>
+			</div>
+			<endgame v-if="end_modal" :show.sync="show" :players="game.players" :is-leader="isLeader" :language="language" :translate="translate"></endgame>
+			<changelogs v-if="changelogs_modal" :changelogs_modal.sync="changelogs_modal" :changelogs="changelogs" :language="language" :translate="translate"></changelogs>
+			<div class="copyright">Copyright © 2020 <a href="http://ldgr.fr/" target="_blank">LDGR</a> – {{translate[language].copyright_reserved}}</div>
+			<div class="info">
+				<span class="changelogs" @click="changelogs_modal = true">v1.0.0</span> -
+				<select class="language" v-model="language" :translate="translate">
+					<option value="english">English</option>
+					<option value="french">Français</option>
+				</select>
+			</div>
+		</main>
+		<script src="https://cdn.jsdelivr.net/npm/socket.io-client@2/dist/socket.io.js"></script>
+		<!-- <script src="/socket.io/socket.io.js" charset="utf-8"></script> -->
+		<script src="js/data.js" charset="utf-8"></script>
+		<script src="js/Rules.js" charset="utf-8"></script>
+		<script src="js/vue.js" charset="utf-8"></script>
+	</body>
+</html>

@@ -1,8 +1,8 @@
 {
-  "name": "uno",
+  "name": "UNO",
   "author": "Dastan21",
-  "version": "0.0.1",
-  "description": "uno game online using sockets",
+  "version": "1.0.0",
+  "description": "UNO game online using sockets",
   "dependencies": {
     "body-parser": "^1.19.0",
     "dotenv": "^8.2.0",

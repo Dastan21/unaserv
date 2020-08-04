@@ -12,7 +12,7 @@ const io = require('socket.io')(http);
 const bodyParser = require('body-parser');
 server.use(bodyParser.json()); // support json encoded bodies
 server.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
-server.use(express.static('public'));
+server.use(express.static('client'));
 
 // local var and functions
 var timelog = function() { d = new Date(); return "[" + d.getHours().toLocaleString(undefined, {minimumIntegerDigits: 2}) + ":" + d.getMinutes().toLocaleString(undefined, {minimumIntegerDigits: 2}) + ":" + d.getSeconds().toLocaleString(undefined, {minimumIntegerDigits: 2}) + "] "; }
@@ -25,9 +25,13 @@ var indexOf = function(array, name, value) {
 	return -1;
 }
 
+// model
+const Game = require('./server/Game');
+const Player = require('./server/Player');
+
 // root
 server.get('/', (req, res) => {
-	res.sendFile(process.env.ROOTDIR + "/index.html", (err, data) => {
+	res.sendFile(process.env.ROOTDIR + "/views/index.html", (err, data) => {
 	    if (err) {
 	      res.writeHead(500);
 	      return res.end("Error loading index.html");
@@ -46,8 +50,9 @@ io.on("connection", (socket) => {
 		socket.user = user;
 		if (Object.keys(io.nsps['/'].adapter.rooms).length < 20){
 			socket.join(socket.user.roomId);
-			log("Room \"" + socket.user.roomId + "\" has been created");
-			log(socket.user.name + " has joined \"" + socket.user.roomId + "\"");
+			io.nsps['/'].adapter.rooms[socket.user.roomId]._id = socket.user.roomId;
+			// log("Room \"" + socket.user.roomId + "\" has been created");
+			// log(socket.user.name + " has joined \"" + socket.user.roomId + "\"");
 		} else
 			socket.emit('failure', [{ message: 'There are already too many rooms.' }]);
 	});
@@ -57,31 +62,118 @@ io.on("connection", (socket) => {
 		let errors = validator(socket);
 		if (errors == null) {
 			socket.join(socket.user.roomId);
-			log(socket.user.name + " has joined \"" + socket.user.roomId + "\"");
-			io.sockets.in(socket.user.roomId).emit('get_names', get_users(socket.user.roomId));
+			// log(socket.user.name + " has joined \"" + socket.user.roomId + "\"");
+			io.nsps['/'].to(socket.user.roomId).emit('get_users', getUsers(socket.user.roomId));
+			let room = io.nsps['/'].adapter.rooms[socket.user.roomId];
+			if (room.game != undefined)
+				socket.emit('start_game', room.game, room.game.rules.rules);
 		} else {
 			socket.user.roomId = null;
 		}
-		socket.emit('failure', errors);
+		if (errors != null)
+			socket.emit('failure', errors);
+	});
+	// creating and starting the game
+	socket.on("start_game", function(gamemode, rulesList) {
+		let room = io.nsps['/'].adapter.rooms[socket.user.roomId];
+		let players = [];
+		getUsers(socket.user.roomId).forEach((user, i) => {
+			players.push(new Player(user._id, user.name));
+		});
+		if (room != undefined) {
+			room.game = new Game(socket.user.roomId, players, gamemode, rulesList);
+			io.nsps['/'].to(socket.user.roomId).emit('start_game', room.game, rulesList);
+		} else
+			socket.emit('failure', [{ message: 'The game cannot start. Please create a new one.' }]);
+	});
+	// updating rules
+	socket.on("game_options", function(gamemode, rulesList) {
+		socket.broadcast.to(socket.user.roomId).emit('game_options', gamemode, rulesList);
     });
 	// update the game
-	socket.on("update_game", function(game) {
+	socket.on("update_game", function(data) {
 		let room = io.nsps['/'].adapter.rooms[socket.user.roomId];
-		if (room != undefined && game != null && room.isPlaying != true)
-			room.isPlaying = true;
-		if (socket.user.roomId != null)
-			socket.broadcast.to(socket.user.roomId).emit('update_game', game);
+		if (room != undefined) {
+			if (room.game == undefined || room.game == null)
+				socket.emit('failure', [{ message: 'The game does not exist.' }]);
+			else if (socket.user._id === room.game.players[room.game.round.turn]._id && !room.game.end) {
+				let stateChanged = true;
+				switch (data.type) {
+					case 'play':
+						room.game.round.play(data.card);
+						break;
+					case 'draw-card':
+						room.game.round.drawCards();
+						break;
+					case 'choose':
+						room.game.round.choose(data.what, data.thing);
+						break;
+					case 'end-turn':
+						room.game.round.endTurn();
+						io.nsps['/'].to(socket.user.roomId).emit('said_uno', false);
+						socket.emit('contested_uno', false);
+						break;
+					default:
+						stateChanged = false;
+				}
+				if (stateChanged) {
+					room.game.checkState();
+					if (room.game.end)
+						io.nsps['/'].to(socket.user.roomId).emit('message', JSON.stringify({ username: "", message: { type: "gameover" }, debug: true, weight: "normal" }));
+					io.nsps['/'].to(socket.user.roomId).emit('update_game', room.game);
+				}
+			}
+		}
 	});
+	// announce UNO!
+	socket.on("say_uno", function(source) {
+		let room = io.nsps['/'].adapter.rooms[socket.user.roomId];
+		if (room != undefined && source == room.game.round.turn && room.game.round.hasPlayed) {
+			if (!room.game.players[room.game.round.turn].hasUNO && room.game.players[room.game.round.turn].hand.length == 1) {
+				room.game.players[room.game.round.turn].hasUNO = true;
+				io.nsps['/'].to(socket.user.roomId).emit('message', JSON.stringify({ username: "", message: { type: "uno", source: socket.user.name }, debug: true, weight: "normal" }));
+			} else {
+				room.game.round.drawPenalties(source);
+				room.game.round.endTurn();
+			}
+			socket.emit('said_uno', true);
+			io.nsps['/'].to(socket.user.roomId).emit('update_game', room.game);
+		}
+    });
+	// contest an UNO
+	socket.on("contest_uno", function(source, target) {
+		let room = io.nsps['/'].adapter.rooms[socket.user.roomId];
+		if (room != undefined && !room.game.round.hasPlayed) {
+			if (room.game.players[target].hand.length == 1 && !room.game.players[target].hasUNO) {
+				room.game.round.drawPenalties(target);
+				io.nsps['/'].to(socket.user.roomId).emit('message', JSON.stringify({ username: "", message: { type: "contest", status: "Win" , source: socket.user.name, target: room.game.players[target].name }, debug: true, weight: "normal" }));
+				if (target == room.game.round.turn && room.game.round.drawCount == 0)
+					room.game.round.endTurn();
+			} else {
+				room.game.round.drawPenalties(source);
+				io.nsps['/'].to(socket.user.roomId).emit('message', JSON.stringify({ username: "", message: { type: "contest", status: "Lose" , source: socket.user.name, target: room.game.players[target].name }, debug: true, weight: "normal" }));
+				if (source == room.game.round.turn && room.game.round.drawCount == 0)
+					room.game.round.endTurn();
+			}
+			socket.emit('contested_uno', true);
+			io.nsps['/'].to(socket.user.roomId).emit('update_game', room.game);
+		}
+    });
+	// close the end modal
+	socket.on("end_modal", function(bool) {
+		io.nsps['/'].to(socket.user.roomId).emit('end_modal', bool);
+    });
 	// leaving a room
 	socket.on("disconnect", function(data) {
 		if (socket.user != undefined && socket.user.roomId != null){
-			log(socket.user.name + " has left \"" + socket.user.roomId + "\"");
-			if (io.nsps['/'].adapter.rooms[socket.user.roomId] == undefined) log("Room \"" + socket.user.roomId + "\" has been deleted");
-			io.sockets.in(socket.user.roomId).emit('get_names', get_users(socket.user.roomId));
+			// log(socket.user.name + " has left \"" + socket.user.roomId + "\"");
+			// if (io.nsps['/'].adapter.rooms[socket.user.roomId] == undefined)
+				// log("Room \"" + socket.user.roomId + "\" has been deleted");
+			io.nsps['/'].to(socket.user.roomId).emit('get_users', getUsers(socket.user.roomId));
 		}
 	});
 	// get usernames
-	function get_users(roomId){
+	function getUsers(roomId){
 		let sockets = [];
 		let room = io.nsps['/'].adapter.rooms[roomId];
 		if (room == undefined) return [];
@@ -104,14 +196,14 @@ io.on("connection", (socket) => {
 		else {
 			if (room.length >= 10)
 				errors.push({ message: 'This room is full.' });
-			get_users(socket.user.roomId).forEach((user, i) => {
-				if (user._id == socket.user._id)
+			getUsers(socket.user.roomId).forEach((user, i) => {
+				if (user._id === socket.user._id)
 					errors.push({ message: user.name + ' is already connected in this room.' });
 			});
 			if (socket.game != undefined){
 				let i = 0;
 				while (i < socket.game.players.length) {
-					if (socket.game.players[i]._id == socket.user._id)
+					if (socket.game.players[i]._id === socket.user._id)
 						break;
 					i++;
 				}

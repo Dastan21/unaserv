@@ -1,0 +1,391 @@
+/**
+ * Stylesheet
+ * @author Dastan21
+ */
+
+
+html, body {
+	font-family: 'Marmelad', sans-serif;
+}
+
+#uno {
+	margin-left: auto;
+	margin-right: auto;
+	display: table;
+}
+
+.room {
+	height: 100%;
+	width: 100%;
+	margin: auto;
+}
+
+/* Chat */
+#chat {
+	height: 100%;
+	width: 17rem;
+	position: fixed;
+	z-index: 1;
+	top: 0;
+	right: 0;
+	display: grid;
+	grid-template-rows: 80px auto 50px;
+	background-color: #EEE;
+	scroll-behavior: smooth;
+}
+
+.chat-form {
+	position: fixed;
+    bottom: 0;
+    right: 0;
+	margin: auto;
+	width: inherit;
+    display: flex;
+    box-sizing: border-box;
+    padding: 5px;
+}
+
+.chat-input {
+	border: 0;
+	padding: 10px;
+	width: 100%;
+	outline: 0;
+	margin-right: 10px;
+	border-radius: 5px;
+	background: #ccc;
+}
+
+.chat-button {
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    border-radius: 5px;
+    text-transform: uppercase;
+}
+
+.chat-form .chat-button:hover {
+	background-color: #3A996B;
+}
+
+.messages {
+	margin: 0 10px;
+	overflow: auto;
+}
+
+.unordered-list {
+	padding: 5px;
+}
+
+.messages .list {
+    margin: 8px 0;
+	overflow-wrap: break-word;
+}
+
+.messages .debug {
+    color: #AAA;
+	font-style: italic;
+}
+
+h1 {
+	text-align: center;
+	text-decoration: underline;
+	text-transform: uppercase;
+}
+
+/* Scoreboard */
+#scoreboard {
+	height: 100%;
+	width: 17rem;
+	position: fixed;
+	z-index: 1;
+	top: 0;
+	left: 0;
+	background-color: #EEE;
+	overflow-x: hidden;
+}
+
+.scoreboard-box {
+	display: table;
+	margin: 0 auto;
+}
+
+.scoreboard-box .scoreboard-list {
+	list-style: none;
+	text-align: right;
+	padding: 0;
+}
+
+.scoreboard-box .scoreboard-list li {
+	padding: 5px 0;
+}
+
+.button {
+	font-family: 'Marmelad';
+	font-size: 15px;
+	text-transform: uppercase;
+	font-weight: bold;
+	padding: 10px 20px;
+	color: #FFDE16;
+	background-color: #ED1C24;
+	border: none;
+	border-radius: 30px;
+	cursor: pointer;
+	transition: 0.2s;
+}
+
+.button:hover, .button:disabled {
+	color: #FFE032;
+	background-color: #CC1821;
+}
+
+:disabled {
+	cursor: not-allowed;
+	filter: grayscale(50%);
+}
+
+#game {
+	align-items: center;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    justify-content: center;
+}
+
+#table {
+	position: absolute;
+	left: calc(50% - 41.5px);
+	top: calc(50% - 64px);
+}
+
+.player {
+	position: absolute;
+	text-align: center;
+}
+
+.player-name {
+	display: inline-block;
+	margin-right: 20px;
+}
+
+.player.playing .player-name {
+	border: 2px black solid;
+	border-radius: 20px;
+	padding: 5px 10px;
+}
+
+.player-content {
+	width: max-content;
+}
+
+.cards {
+	position: relative;
+	top: 0;
+	justify-content: center;
+	max-width: 60rem;
+	margin: auto;
+}
+
+.card {
+	z-index: 1;
+	position: absolute;
+	height: 128px;
+	width: 83px;
+    min-width: 83px;
+	margin: auto;
+    justify-content: center;
+    align-items: center;
+}
+
+.card .card-img {
+	height: inherit;
+	width: inherit;
+	transition: 0.07s;
+}
+
+.card.playable:hover .card-img {
+	transform: translateY(-30px);
+	cursor: pointer;
+}
+
+#decks {
+	position: absolute;
+	top: 0;
+}
+
+.discard {
+	margin-left: -50px;
+}
+
+.discard.dragging {
+	border: 2px black dashed;
+}
+
+.deck {
+	margin-left: 50px;
+}
+
+.deck.card.playable:hover .card-img {
+	transform: none;
+	transform: scale(1.1);
+}
+
+.choice {
+	margin-top: 138px;
+	display: inline-block;
+	margin-left: -33%;
+}
+
+.choice .button {
+	margin: 0 2px;
+}
+
+.waiting {
+	width: 60em;
+	margin: auto;
+	text-align: center;
+}
+
+.options {
+	margin: auto;
+}
+
+.rules {
+	width: fit-content;
+	margin: auto;
+}
+
+.rule {
+	display: block;
+	text-align: right;
+	cursor: pointer;
+}
+
+.rule:hover {
+	font-weight: bold;
+}
+
+.players-list {
+	width: 10em;
+	margin: auto;
+	text-align: left;
+}
+
+.description {
+	margin: 10px;
+	padding: 5px;
+	border: 1px black solid;
+	border-radius: 10px;
+	border-style: dashed;
+}
+
+.invite {
+	margin: 20px;
+}
+
+.modal-background {
+	position: fixed;
+	z-index: 1000;
+	padding-top: 100px;
+	left: 0;
+	top: 0;
+	width: 100vw;
+	height: 100vh;
+	overflow: auto;
+	background-color: rgb(0,0,0);
+	background-color: rgba(0,0,0,0.4);
+}
+
+.modal-content {
+	max-width: 80%;
+	max-height: 80%;
+	overflow-y: auto;
+	background-color: #fefefe;
+	margin: auto;
+	padding: 20px;
+	border: 1px solid black;
+	width: 25em;
+	text-align: center;
+}
+
+.changelogs {
+	width: 60em;
+}
+
+.modal-close {
+	color: #bbb;
+	float: right;
+	font-size: 28px;
+	font-weight: bold;
+}
+
+.modal-close:hover {
+	color: black;
+	text-decoration: none;
+	cursor: pointer;
+}
+
+.copyright {
+	position: absolute;
+	left: 50rem;
+	bottom: 0;
+	z-index: 2;
+	margin: 10px 0;
+	text-align: center;
+	font-size: 14px;
+}
+
+.copyright a {
+	color: inherit;
+	text-decoration: none;
+}
+
+.copyright a:hover {
+	text-decoration: underline;
+}
+
+.info {
+	z-index: 2;
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	margin: 10px;
+	text-align: center;
+	font-size: 14px;
+}
+
+.info .changelogs:hover, .info .language:hover  {
+	text-decoration: underline;
+	cursor: pointer;
+}
+
+.changelogs-title {
+	border: 2px solid black;
+    width: fit-content;
+    margin: auto;
+    padding: 8px;
+}
+
+.changelogs-list {
+	list-style-type: square;
+	text-align: left;
+}
+
+.logs-title {
+	font-style: italic;
+}
+
+.log-element {
+	margin: 10px 0;
+}
+
+.changelogs-version-date {
+	font-size: 12px;
+	font-style: italic;
+	font-weight: normal;
+}
+
+.info .language {
+	appearance: none;
+	border: none;
+	background: none;
+}
