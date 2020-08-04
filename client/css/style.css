@@ -203,7 +203,7 @@ h1 {
 }
 
 .card.playable:hover .card-img {
-	transform: translateY(-30px);
+	transform: translateY(-30px) scale(1.1);
 	cursor: pointer;
 }
 
@@ -353,7 +353,12 @@ h1 {
 	font-size: 14px;
 }
 
-.info .changelogs:hover, .info .language:hover  {
+.info .link  {
+	text-decoration: none;
+	color: black;
+}
+
+.info .link:hover  {
 	text-decoration: underline;
 	cursor: pointer;
 }

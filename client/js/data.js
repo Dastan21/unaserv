@@ -108,6 +108,35 @@ const changelogs = [
 				french: []
 			},
 		},
+	},
+	{
+		version: "1.0.1",
+		date: {
+			english: "2020-08-04",
+			french: "04/08/2020"
+		},
+		logs: {
+			title: {
+				english: "Littles bugfixes.",
+				french: "Petites corrections de bugs."
+			},
+			features: {
+				english: [
+					"Added 'Report bugs' button (linked to github issues page)"
+				],
+				french: [
+					"Ajouté un bouton 'Report bugs' button (linked to github issues page)"
+				]
+			},
+			bugs: {
+				english: [
+					"Player could see which card his opponents could play when he was playing while hovering opponents' cards"
+				],
+				french: [
+					"Un joueur pouvait voir les cartes jouables de son adversaire lors de son tour en passant sa souris sur les cartes adverses"
+				]
+			},
+		},
 	}
 ];
 
@@ -145,6 +174,7 @@ const language = {
 		changelogs_title: "Changelogs",
 		changelogs_feature: "Features",
 		changelogs_bugs: "Bugs",
+		changelogs_report: "Report bugs",
 		// Endgame
 		endgame_winMessage: "has won the game!",
 		endgame_playAgain: "Play again",
@@ -187,6 +217,7 @@ const language = {
 		changelogs_title: "Journal des modifications",
 		changelogs_feature: "Fonctionnalités",
 		changelogs_bugs: "Bugs",
+		changelogs_report: "Signaler un bug",
 		// Endgame
 		endgame_winMessage: "a gagné la partie !",
 		endgame_playAgain: "Rejouer",

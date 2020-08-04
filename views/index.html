@@ -32,8 +32,6 @@
 								<option value="3">3</option>
 								<option value="5">5</option>
 								<option value="10">10</option>
-								<option value="20">20</option>
-								<option value="30">30</option>
 							</select>
 						</div>
 						<div v-else-if="gamemode === 'score'"></div>
@@ -57,7 +55,7 @@
 						<div class="player-content" :style="{ transform: 'rotate('+(-getTableData(indexPlayer).a)+'deg) translateY(-64px)' }">
 							<span><h3 class="player-name">{{player.name}}</h3><button class="button" v-if="player._id != user._id" @click="contestUno(indexPlayer)" :disabled="!canContestUno()">{{translate[language].game_contest}}</button></span>
 							<div class="cards">
-								<div class="card" :class="{ playable: cardPlayable(card, indexPlayer) }" :style="{ transform: 'translate('+getCardPosData(player.hand.length,indexCard,indexPlayer).dx+'px, '+getCardPosData(player.hand.length,indexCard,indexPlayer).dy+'px) rotate('+getCardPosData(player.hand.length,indexCard,indexPlayer).a+'rad)' }" v-for="(card, indexCard) in player.hand" @click="play(card, indexPlayer)"><img class="card-img" @dragstart="dragStart(card)" @dragend="dragEnd()" :src="getCardImgData(player, card).src" :alt="getCardImgData(player, card).alt"></div>
+								<div class="card" :class="{ playable: cardPlayable(card, indexPlayer) }" :style="{ transform: 'translate('+getCardPosData(player.hand.length,indexCard,indexPlayer).dx+'px, '+getCardPosData(player.hand.length,indexCard,indexPlayer).dy+'px) rotate('+getCardPosData(player.hand.length,indexCard,indexPlayer).a+'rad)' }" v-for="(card, indexCard) in player.hand" @click="play(card, indexPlayer)"><img class="card-img" @dragstart="dragStart(card, indexPlayer)" @dragend="dragEnd()" :src="getCardImgData(player, card).src" :alt="getCardImgData(player, card).alt"></div>
 							</div>
 						</div>
 					</div>
@@ -80,8 +78,9 @@
 			<changelogs v-if="changelogs_modal" :changelogs_modal.sync="changelogs_modal" :changelogs="changelogs" :language="language" :translate="translate"></changelogs>
 			<div class="copyright">Copyright © 2020 <a href="http://ldgr.fr/" target="_blank">LDGR</a> – {{translate[language].copyright_reserved}}</div>
 			<div class="info">
-				<span class="changelogs" @click="changelogs_modal = true">v1.0.0</span> -
-				<select class="language" v-model="language" :translate="translate">
+				<span class="link" @click="changelogs_modal = true">v1.0.0</span> -
+				<a class="link" href="https://github.com/Dastan21/unaserv/issues" target="_blank">{{translate[language].changelogs_report}}</a> -
+				<select class="link language" v-model="language" :translate="translate">
 					<option value="english">English</option>
 					<option value="french">Français</option>
 				</select>

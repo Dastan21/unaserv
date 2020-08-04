@@ -218,12 +218,12 @@ new Vue({
 		canEndTurn() {
 			return (this.game.round.hasPlayed || this.game.round.drawed > 0) && this.playerTurn() && !this.game.round.choosing;
 		},
-		play(card) {
-			if (!this.game.end && this.cardPlayable(card))
+		play(card, indexPlayer) {
+			if (!this.game.end && this.cardPlayable(card, indexPlayer))
 				socket.emit('update_game', { type: 'play', card: card });
 		},
-		cardPlayable(card) {
-			return !this.game.end && this.rules.canPlay(card, this.game.round.deck.discardtop, this.game.round.hasPlayed, this.game.round.drawCount, this.game.round.drawed, this.game.players[this.game.round.turn].hand, this.game.round.choosing) && this.playerTurn();
+		cardPlayable(card, indexPlayer) {
+			return !this.game.end && this.rules.canPlay(card, this.game.round.deck.discardtop, this.game.round.hasPlayed, this.game.round.drawCount, this.game.round.drawed, this.game.players[this.game.round.turn].hand, this.game.round.choosing) && indexPlayer == this.game.round.turn && this.playerTurn();
 		},
 		playerTurn() {
 			return this.game.players[this.game.round.turn]._id == this.user._id;
@@ -290,8 +290,8 @@ new Vue({
 		contestUno(indexPlayer) {
 			socket.emit('contest_uno', this.indexOf(this.users, this.user, '_id'), indexPlayer);
 		},
-		dragStart(card) {
-			if (this.cardPlayable(card))
+		dragStart(card, indexPlayer) {
+			if (this.cardPlayable(card, indexPlayer))
 				this.draggingCard = card;
 		},
 		dragEnd() {
