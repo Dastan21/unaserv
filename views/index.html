@@ -76,14 +76,18 @@
 			</div>
 			<endgame v-if="end_modal" :show.sync="show" :players="game.players" :is-leader="isLeader" :language="language" :translate="translate"></endgame>
 			<changelogs v-if="changelogs_modal" :changelogs_modal.sync="changelogs_modal" :changelogs="changelogs" :language="language" :translate="translate"></changelogs>
-			<div class="copyright">Copyright © 2020 <a href="http://ldgr.fr/" target="_blank">LDGR</a> – {{translate[language].copyright_reserved}}</div>
-			<div class="info">
-				<span class="link" @click="changelogs_modal = true">v1.0.1</span> -
-				<a class="link" href="https://github.com/Dastan21/unaserv/issues" target="_blank">{{translate[language].changelogs_report}}</a> -
+			<div class="info center">
+				<a class="link" href="https://github.com/Dastan21/unaserv/" target="_blank">{{translate[language].source_code}}</a> -
+				<a class="link" href="https://github.com/Dastan21/unaserv/issues" target="_blank">{{translate[language].changelogs_report}}</a>
+			</div>
+			<div class="info right">
 				<select class="link language" v-model="language" :translate="translate">
 					<option value="english">English</option>
 					<option value="french">Français</option>
 				</select>
+			</div>
+			<div class="info left">
+				<span class="link" @click="changelogs_modal = true">v1.0.1</span>
 			</div>
 		</main>
 		<script src="https://cdn.jsdelivr.net/npm/socket.io-client@2/dist/socket.io.js"></script>

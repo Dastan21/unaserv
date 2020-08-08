@@ -183,7 +183,7 @@ const language = {
 		game_chooseColor: "Choose color:",
 		game_contest: "Contest",
 		// Copyright
-		copyright_reserved: "All Rights Reserved.",
+		source_code: "Source code",
 	},
 	french: {
 		// Room
@@ -226,6 +226,6 @@ const language = {
 		game_chooseColor: "Choix de couleur :",
 		game_contest: "Contre-UNA",
 		// Copyright
-		copyright_reserved: "Tous droits réservés.",
+		source_code: "Code source.",
 	}
 };
