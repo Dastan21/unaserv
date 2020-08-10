@@ -3,7 +3,7 @@
  * @author Dastan21
  */
 
-const socket = io("http://ldgr.fr", {
+const socket = io("https://ldgr.fr", {
 	path:'/una/socket.io',
 	reconnection: true,
 	reconnectionDelay: 1000,
