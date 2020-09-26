@@ -150,7 +150,7 @@ const language = {
 		room_leader: "Leader",
 		room_start: "Start",
 		room_playersList: "Players list",
-		room_invite: "Invite link:",
+		room_invite: "Copy invite link",
 		room_disconnect: "has disconnected",
 		room_reconnect: "has reconnected",
 		// Options
@@ -193,7 +193,7 @@ const language = {
 		room_leader: "Chef",
 		room_start: "Commencer",
 		room_playersList: "Liste des joueurs",
-		room_invite: "Lien d'invitation :",
+		room_invite: "Copier le lien d'invitation",
 		room_disconnect: "s'est déconnecté",
 		room_reconnect: "s'est reconnecté",
 		// Options

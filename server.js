@@ -1,8 +1,6 @@
 // read env files
 const result = require('dotenv').config();
-if (result.error) {
-	throw result.error;
-}
+if (result.error) throw result.error;
 
 // http
 const express = require('express');
@@ -31,7 +29,7 @@ const Player = require('./server/Player');
 
 // root
 server.get('/', (req, res) => {
-	res.sendFile(process.env.ROOTDIR + "/views/index.html", (err, data) => {
+	res.sendFile(__dirname + "/views/index.html", (err, data) => {
 	    if (err) {
 	      res.writeHead(500);
 	      return res.end("Error loading index.html");

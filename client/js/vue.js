@@ -3,6 +3,7 @@
  * @author Dastan21
  */
 
+/* Socket */
 const socket = io("https://ldgr.fr", {
 	path:'/una/socket.io',
 	reconnection: true,
@@ -11,8 +12,6 @@ const socket = io("https://ldgr.fr", {
 	reconnectionAttempts: 99999
 });
 // const socket = io();
-
-
 
 /* Index vue */
 new Vue({
@@ -300,7 +299,7 @@ new Vue({
 		drop() {
 			if (this.draggingCard != null)
 				this.play(this.draggingCard);
-		},
+		}
 	},
 	mounted() {
 		let language = this.getCookie("language");
