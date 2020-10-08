@@ -134,8 +134,8 @@ new Vue({
 			return this.indexOf(this.users, this.user, '_id') == 0;
 		},
 		roomURL: function() {
-			// return window.location.origin + "/una/?" + this.user.roomId;
-			return window.location.origin + "/?" + this.user.roomId;
+			return window.location.origin + "/una/?" + this.user.roomId;
+			// return window.location.origin + "/?" + this.user.roomId;
 		}
 	},
 	methods: {
