@@ -229,7 +229,7 @@ new Vue({
 			return this.game.players[this.game.round.turn]._id == this.user._id;
 		},
 		canDraw() {
-			return this.playerTurn() && !this.game.round.hasPlayed && !this.game.;
+			return this.playerTurn() && !this.game.round.hasPlayed;
 			// return !this.game.end && this.playerTurn() && this.rules.canDraw(this.game.round.hasPlayed, this.game.round.drawed, this.game.round.choosing);
 		},
 		drawCards() {
