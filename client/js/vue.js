@@ -4,14 +4,14 @@
  */
 
 /* Socket */
-const socket = io("https://ldgr.fr", {
-	path:'/una/socket.io',
-	reconnection: true,
-	reconnectionDelay: 1000,
-	reconnectionDelayMax: 5000,
-	reconnectionAttempts: 99999
-});
-// const socket = io();
+// const socket = io("https://ldgr.fr", {
+// 	path:'/una/socket.io',
+// 	reconnection: true,
+// 	reconnectionDelay: 1000,
+// 	reconnectionDelayMax: 5000,
+// 	reconnectionAttempts: 99999
+// });
+const socket = io();
 
 /* Index vue */
 new Vue({
@@ -33,7 +33,7 @@ new Vue({
 		maxRound: 3,
 		maxScore: 500,
 		rulesList: {},
-		rules: null,
+		// rules: null,
 		game: null,
 		saidUno: false,
 		contestedUno: false,
@@ -67,7 +67,7 @@ new Vue({
 		});
 
 		socket.on('start_game', (game, rulesList) => {
-			this.rules = new Rules(rulesList);
+			// this.rules = new Rules(rulesList);
 			this.game = game;
 			this.show = 'game-playing';
 		});
@@ -134,8 +134,8 @@ new Vue({
 			return this.indexOf(this.users, this.user, '_id') == 0;
 		},
 		roomURL: function() {
-			return window.location.origin + "/una/?" + this.user.roomId;
-			// return window.location.origin + "/?" + this.user.roomId;
+			// return window.location.origin + "/una/?" + this.user.roomId;
+			return window.location.origin + "/?" + this.user.roomId;
 		}
 	},
 	methods: {
@@ -222,16 +222,19 @@ new Vue({
 				socket.emit('update_game', { type: 'play', card: card });
 		},
 		cardPlayable(card, indexPlayer) {
-			return !this.game.end && this.rules.canPlay(card, this.game.round.deck.discardtop, this.game.round.hasPlayed, this.game.round.drawCount, this.game.round.drawed, this.game.players[this.game.round.turn].hand, this.game.round.choosing) && indexPlayer == this.game.round.turn && this.playerTurn();
+			return this.playerTurn() && card.playable;
+			// return !this.game.end && this.rules.canPlay(card, this.game.round.deck.discardtop, this.game.round.hasPlayed, this.game.round.drawCount, this.game.round.drawed, this.game.players[this.game.round.turn].hand, this.game.round.choosing) && indexPlayer == this.game.round.turn && this.playerTurn();
 		},
 		playerTurn() {
 			return this.game.players[this.game.round.turn]._id == this.user._id;
 		},
 		canDraw() {
-			return !this.game.end && this.playerTurn() && this.rules.canDraw(this.game.round.hasPlayed, this.game.round.drawed, this.game.round.choosing);
+			return this.playerTurn() && !this.game.round.hasPlayed && !this.game.;
+			// return !this.game.end && this.playerTurn() && this.rules.canDraw(this.game.round.hasPlayed, this.game.round.drawed, this.game.round.choosing);
 		},
 		drawCards() {
-			if (!this.game.end && this.rules.canDraw(this.game.round.hasPlayed, this.game.round.drawed, this.game.round.choosing))
+			// this.rules.canDraw(this.game.round.hasPlayed, this.game.round.drawed, this.game.round.choosing)
+			if (!this.game.end && this.canDraw())
 				socket.emit('update_game', { type: 'draw-card' });
 		},
 		choosing() {

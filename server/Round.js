@@ -168,9 +168,9 @@ class Round {
 
 	// set every cards in hands to playable or not
 	updateCards() {
-		this.players.forEach(player => {
+		this.players.forEach((player, i) => {
 			player.hand.forEach(card => {
-				if (this.rules.canPlay(card, this.deck.discardtop, this.hasPlayed, this.drawCount, this.drawed, this.players[this.turn].hand, this.choosing))
+				if (i == this.turn && this.rules.canPlay(card, this.deck.discardtop, this.hasPlayed, this.drawCount, this.drawed, this.players[this.turn].hand, this.choosing))
 					card.playable = true;
 				else
 					card.playable = false;

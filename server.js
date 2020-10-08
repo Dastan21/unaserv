@@ -49,8 +49,9 @@ io.on("connection", (socket) => {
 		if (Object.keys(io.nsps['/'].adapter.rooms).length < 20){
 			socket.join(socket.user.roomId);
 			io.nsps['/'].adapter.rooms[socket.user.roomId]._id = socket.user.roomId;
-			// log("Room \"" + socket.user.roomId + "\" has been created");
-			// log(socket.user.name + " has joined \"" + socket.user.roomId + "\"");
+			/* LOG */
+			log("Room \"" + socket.user.roomId + "\" has been created");
+			log(socket.user.name + " has joined \"" + socket.user.roomId + "\"");
 		} else
 			socket.emit('failure', [{ message: 'There are already too many rooms.' }]);
 	});
@@ -60,7 +61,8 @@ io.on("connection", (socket) => {
 		let errors = validator(socket);
 		if (errors == null) {
 			socket.join(socket.user.roomId);
-			// log(socket.user.name + " has joined \"" + socket.user.roomId + "\"");
+			/* LOG */
+			log(socket.user.name + " has joined \"" + socket.user.roomId + "\"");
 			io.nsps['/'].to(socket.user.roomId).emit('get_users', getUsers(socket.user.roomId));
 			let room = io.nsps['/'].adapter.rooms[socket.user.roomId];
 			if (room.game != undefined)
@@ -164,9 +166,10 @@ io.on("connection", (socket) => {
 	// leaving a room
 	socket.on("disconnect", function(data) {
 		if (socket.user != undefined && socket.user.roomId != null){
-			// log(socket.user.name + " has left \"" + socket.user.roomId + "\"");
-			// if (io.nsps['/'].adapter.rooms[socket.user.roomId] == undefined)
-				// log("Room \"" + socket.user.roomId + "\" has been deleted");
+			/* LOG */
+			log(socket.user.name + " has left \"" + socket.user.roomId + "\"");
+			if (io.nsps['/'].adapter.rooms[socket.user.roomId] == undefined)
+				log("Room \"" + socket.user.roomId + "\" has been deleted");
 			io.nsps['/'].to(socket.user.roomId).emit('get_users', getUsers(socket.user.roomId));
 		}
 	});
@@ -226,4 +229,4 @@ server.use(function(req, res, next) {
 });
 
 
-http.listen(process.env.PORT, () => { log(`Server listening at http://localhost:${process.env.PORT}`) });
+http.listen(process.env.PORT, () => { log(`UNA server is online !`) });
