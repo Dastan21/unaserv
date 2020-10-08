@@ -13,8 +13,9 @@ server.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
 server.use(express.static('client'));
 
 // local var and functions
-var timelog = function() { d = new Date(); return "[" + d.getHours().toLocaleString(undefined, {minimumIntegerDigits: 2}) + ":" + d.getMinutes().toLocaleString(undefined, {minimumIntegerDigits: 2}) + ":" + d.getSeconds().toLocaleString(undefined, {minimumIntegerDigits: 2}) + "] "; }
-var log = function(msg) { if (typeof msg === "object") console.log(timelog() + JSON.stringify(msg)); else console.log(timelog() + msg); }
+// var timelog = function() { d = new Date(); return "[" + d.getHours().toLocaleString(undefined, {minimumIntegerDigits: 2}) + ":" + d.getMinutes().toLocaleString(undefined, {minimumIntegerDigits: 2}) + ":" + d.getSeconds().toLocaleString(undefined, {minimumIntegerDigits: 2}) + "] "; }
+// var log = function(msg) { if (typeof msg === "object") console.log(timelog() + JSON.stringify(msg)); else console.log(timelog() + msg); }
+var log = function(msg) { console.log(msg); }
 // var userslog = function() { log(users.length + " user(s) connected :"); users.forEach(user => { log( "• " + user.name + " - " + user.id) }) }
 var indexOf = function(array, name, value) {
 	for (var i = 0; i < array.length; i++)
