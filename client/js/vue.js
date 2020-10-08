@@ -4,14 +4,14 @@
  */
 
 /* Socket */
-// const socket = io("https://ldgr.fr", {
-// 	path:'/una/socket.io',
-// 	reconnection: true,
-// 	reconnectionDelay: 1000,
-// 	reconnectionDelayMax: 5000,
-// 	reconnectionAttempts: 99999
-// });
-const socket = io();
+const socket = io("https://ldgr.fr", {
+	path:'/una/socket.io',
+	reconnection: true,
+	reconnectionDelay: 1000,
+	reconnectionDelayMax: 5000,
+	reconnectionAttempts: 99999
+});
+// const socket = io();
 
 /* Index vue */
 new Vue({
