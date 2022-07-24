@@ -143,7 +143,7 @@ new Vue({
 			var cookieArr = document.cookie.split("; ")
 
 			var cookiePair = ""
-			for (let i = 0; i < cookieArr.lengt; i++) {
+			for (let i = 0; i < cookieArr.length; i++) {
 				cookiePair = cookieArr[i].split("=")
 				if (cookiePair[0] === name)
 					return decodeURIComponent(cookiePair[1])
