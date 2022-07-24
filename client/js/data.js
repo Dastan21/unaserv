@@ -137,6 +137,19 @@ const changelogs = [
 				]
 			},
 		},
+	},
+	{
+		version: "1.1.0",
+		date: {
+			english: "2022-07-24",
+			french: "24/07/2022"
+		},
+		logs: {
+			title: {
+				english: "Added SSL and fixed socketio dist.",
+				french: "Ajout de SSL et correction du fichier de distribution SocketIO."
+			}
+		},
 	}
 ];
 

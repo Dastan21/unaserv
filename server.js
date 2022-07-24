@@ -1,35 +1,26 @@
 // read env files
-const result = require('dotenv').config();
-if (result.error) throw result.error;
+require('dotenv').config();
 
 // http
+const fs = require('fs');
 const express = require('express');
-const server = express();
-const http = require('http').Server(server);
-const io = require('socket.io')(http);
+const app = express();
+const https = require('https').createServer({
+	cert: fs.readFileSync(process.env.SSL_CERT),
+	key: fs.readFileSync(process.env.SSL_KEY)
+}, app);
+const io = require('socket.io')(https);
 const bodyParser = require('body-parser');
-server.use(bodyParser.json()); // support json encoded bodies
-server.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
-server.use(express.static('client'));
-
-// local var and functions
-// var timelog = function() { d = new Date(); return "[" + d.getHours().toLocaleString(undefined, {minimumIntegerDigits: 2}) + ":" + d.getMinutes().toLocaleString(undefined, {minimumIntegerDigits: 2}) + ":" + d.getSeconds().toLocaleString(undefined, {minimumIntegerDigits: 2}) + "] "; }
-// var log = function(msg) { if (typeof msg === "object") console.log(timelog() + JSON.stringify(msg)); else console.log(timelog() + msg); }
-var log = function(msg) { console.log(msg); }
-// var userslog = function() { log(users.length + " user(s) connected :"); users.forEach(user => { log( "• " + user.name + " - " + user.id) }) }
-var indexOf = function(array, name, value) {
-	for (var i = 0; i < array.length; i++)
-		if (array[i][name] == value)
-			return i;
-	return -1;
-}
+app.use(bodyParser.json()); // support json encoded bodies
+app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
+app.use(express.static('client'));
 
 // model
 const Game = require('./server/Game');
 const Player = require('./server/Player');
 
 // root
-server.get('/', (req, res) => {
+app.get('/', (req, res) => {
 	res.sendFile(__dirname + "/views/index.html", (err, data) => {
 	    if (err) {
 	      res.writeHead(500);
@@ -51,8 +42,8 @@ io.on("connection", (socket) => {
 			socket.join(socket.user.roomId);
 			io.nsps['/'].adapter.rooms[socket.user.roomId]._id = socket.user.roomId;
 			/* LOG */
-			log("Room \"" + socket.user.roomId + "\" has been created");
-			log(socket.user.name + " has joined \"" + socket.user.roomId + "\"");
+			console.log("Room \"" + socket.user.roomId + "\" has been created");
+			console.log(socket.user.name + " has joined \"" + socket.user.roomId + "\"");
 		} else
 			socket.emit('failure', [{ message: 'There are already too many rooms.' }]);
 	});
@@ -63,7 +54,7 @@ io.on("connection", (socket) => {
 		if (errors == null) {
 			socket.join(socket.user.roomId);
 			/* LOG */
-			log(socket.user.name + " has joined \"" + socket.user.roomId + "\"");
+			console.log(socket.user.name + " has joined \"" + socket.user.roomId + "\"");
 			io.nsps['/'].to(socket.user.roomId).emit('get_users', getUsers(socket.user.roomId));
 			let room = io.nsps['/'].adapter.rooms[socket.user.roomId];
 			if (room.game != undefined)
@@ -168,9 +159,9 @@ io.on("connection", (socket) => {
 	socket.on("disconnect", function(data) {
 		if (socket.user != undefined && socket.user.roomId != null){
 			/* LOG */
-			log(socket.user.name + " has left \"" + socket.user.roomId + "\"");
+			console.log(socket.user.name + " has left \"" + socket.user.roomId + "\"");
 			if (io.nsps['/'].adapter.rooms[socket.user.roomId] == undefined)
-				log("Room \"" + socket.user.roomId + "\" has been deleted");
+				console.log("Room \"" + socket.user.roomId + "\" has been deleted");
 			io.nsps['/'].to(socket.user.roomId).emit('get_users', getUsers(socket.user.roomId));
 		}
 	});
@@ -219,15 +210,15 @@ io.on("connection", (socket) => {
 
 
 // Errors
-server.use(function(req, res, next) {
+app.use(function(req, res, next) {
     res.status(403).send("Sorry, you can't go there :)");
 });
-server.use(function(req, res, next) {
+app.use(function(req, res, next) {
     res.status(404).send("Sorry, that route doesn't exist. Have a nice day :)");
 });
-server.use(function(req, res, next) {
+app.use(function(req, res, next) {
 	res.status(500).send("Oops! Something blew up :)");
 });
 
-
-http.listen(process.env.PORT, () => { log(`UNA server is online !`) });
+const port = process.env.PORT ?? 3000
+https.listen(port, '127.0.0.1', () => { console.log(`UNA server is online at port ${port}!`) });
