@@ -4,14 +4,7 @@
  */
 
 /* Socket */
-const socket = io("https://ldgr.fr", {
-	path:'/una/socket.io',
-	reconnection: true,
-	reconnectionDelay: 1000,
-	reconnectionDelayMax: 5000,
-	reconnectionAttempts: 99999
-});
-// const socket = io();
+const socket = io();
 
 /* Index vue */
 new Vue({
@@ -102,7 +95,7 @@ new Vue({
 			if (errors != null) {
 				errors.forEach(error => {
 					alert(error.message);
-					window.location = window.location.origin + "/una/";
+					window.location = window.location.origin + "/";
 				});
 			}
 		});
@@ -134,8 +127,7 @@ new Vue({
 			return this.indexOf(this.users, this.user, '_id') == 0;
 		},
 		roomURL: function() {
-			return window.location.origin + "/una/?" + this.user.roomId;
-			// return window.location.origin + "/?" + this.user.roomId;
+			return window.location.origin + "/?" + this.user.roomId;
 		}
 	},
 	methods: {
