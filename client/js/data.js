@@ -4,9 +4,9 @@
  */
 
 
-const colors = [ "red", "green", "yellow", "blue" ];
+const colors = [ "red", "green", "yellow", "blue" ]
 
-var defaultUsernames = ["Adrien","Albin","Alexandrin","Ancelin","Antonin","Aubin","Augustin","Baptistin","Benjamin","Cassien","Celestin","Cesarin","Colin","Corentin","Constantin","Crispin","Fabien","Faustin","Firmin","Florentin","Gabin","Honorin","Hugolin","Jasmin","Josquin","Julien","Justin","Leontin","Lubin","Lucien","Marcellin","Marin","Martin","Mathurin","Maximin","Merlin","Paulin","Quentin","Robin","Saturnin","Seraphin","Severin","Valentin","Zephyrin"];
+var defaultUsernames = ["Adrien","Albin","Alexandrin","Ancelin","Antonin","Aubin","Augustin","Baptistin","Benjamin","Cassien","Celestin","Cesarin","Colin","Corentin","Constantin","Crispin","Fabien","Faustin","Firmin","Florentin","Gabin","Honorin","Hugolin","Jasmin","Josquin","Julien","Justin","Leontin","Lubin","Lucien","Marcellin","Marin","Martin","Mathurin","Maximin","Merlin","Paulin","Quentin","Robin","Saturnin","Seraphin","Severin","Valentin","Zephyrin"]
 
 const options = {
 	gamemodes: {
@@ -84,7 +84,7 @@ const options = {
 		// 	description: "Time limite rule."
 		// }
 	}
-};
+}
 
 
 const changelogs = [
@@ -122,10 +122,10 @@ const changelogs = [
 			},
 			features: {
 				english: [
-					"Added 'Report bugs' button (linked to github issues page)"
+					"Added 'Report a bug' button (linked to github issues page)"
 				],
 				french: [
-					"Ajouté un bouton 'Report bugs' (lié à la page des problèmes sur github)"
+					"Ajouté un bouton 'Signaler un bug' (lié à la page des problèmes sur github)"
 				]
 			},
 			bugs: {
@@ -146,12 +146,12 @@ const changelogs = [
 		},
 		logs: {
 			title: {
-				english: "Added SSL and fixed socketio dist.",
-				french: "Ajout de SSL et correction du fichier de distribution SocketIO."
+				english: "Updated dependencies and fixed some things.",
+				french: "Mise à jour des dépendances et quelques corrections"
 			}
 		},
 	}
-];
+]
 
 
 const language = {
@@ -187,7 +187,7 @@ const language = {
 		changelogs_title: "Changelogs",
 		changelogs_feature: "Features",
 		changelogs_bugs: "Bugs",
-		changelogs_report: "Report bugs",
+		changelogs_report: "Report a bug",
 		// Endgame
 		endgame_winMessage: "has won the game!",
 		endgame_playAgain: "Play again",
@@ -239,6 +239,6 @@ const language = {
 		game_chooseColor: "Choix de couleur :",
 		game_contest: "Contre-UNA",
 		// Copyright
-		source_code: "Code source.",
+		source_code: "Code source",
 	}
-};
+}
