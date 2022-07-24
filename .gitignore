@@ -1,6 +1,7 @@
 .env
-node_modules/
+node_modules
 copyright*
 processing-cards/
 model.js
 uno.html
+ssl
