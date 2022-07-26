@@ -122,21 +122,21 @@ const changelogs = [
 			},
 			features: {
 				english: [
-					"Added 'Report a bug' button (linked to github issues page)"
+					"Added 'Report a bug' button (linked to github issues page)."
 				],
 				french: [
-					"Ajouté un bouton 'Signaler un bug' (lié à la page des problèmes sur github)"
+					"Ajouté un bouton 'Signaler un bug' (lié à la page des problèmes sur github)."
 				]
 			},
 			bugs: {
 				english: [
-					"Player could see which card his opponents could play when he was playing while hovering opponents' cards"
+					"Player could see which card his opponents could play when he was playing while hovering opponents' cards."
 				],
 				french: [
-					"Un joueur pouvait voir les cartes jouables de son adversaire lors de son tour en passant sa souris sur les cartes adverses"
+					"Un joueur pouvait voir les cartes jouables de son adversaire lors de son tour en passant sa souris sur les cartes adverses."
 				]
-			},
-		},
+			}
+		}
 	},
 	{
 		version: "1.1.0",
@@ -147,11 +147,44 @@ const changelogs = [
 		logs: {
 			title: {
 				english: "Updated dependencies and fixed some things.",
-				french: "Mise à jour des dépendances et quelques corrections"
+				french: "Mise à jour des dépendances et quelques corrections."
+			},
+			features: {
+				english: [],
+				french: []
+			},
+			bugs: {
+				english: [],
+				french: []
 			}
+		}
+	},
+	{
+		version: "1.1.1",
+		date: {
+			english: "2022-07-26",
+			french: "26/07/2022"
 		},
+		logs: {
+			title: {
+				english: "Bugs and translations fixes.",
+				french: "Corrections de bugs et de traductions."
+			},
+			features: {
+				english: [],
+				french: []
+			},
+			bugs: {
+				english: [
+					"Fixed bug where the player was forced to draw a card on a new round."
+				],
+				french: [
+					"Correction d'un bug qui obligeait le joueur à piocher une carte lors d'une nouvelle manche."
+				]
+			}
+		}
 	}
-]
+].reverse()
 
 
 const language = {
@@ -193,8 +226,12 @@ const language = {
 		endgame_playAgain: "Play again",
 		// Game
 		game_endTurn: "End turn",
-		game_chooseColor: "Choose color:",
 		game_contest: "Contest",
+		// Colors
+		color_red: "red",
+		color_green: "green",
+		color_yellow: "yellow",
+		color_blue: "blue",
 		// Copyright
 		source_code: "Source code",
 	},
@@ -210,11 +247,11 @@ const language = {
 		room_disconnect: "s'est déconnecté",
 		room_reconnect: "s'est reconnecté",
 		// Options
-		options_title: "Options",
+		options_title: "Paramètres",
 		options_gamemode: "Sélectionner un mode de jeu :",
 		options_rounds: "Nombre de manches :",
 		// Chat
-		chat_title: "Tchat",
+		chat_title: "Discussion",
 		chat_send: "Envoyer",
 		chat_placeholder: "Écrire ici",
 		message_uno: "dit UNA!",
@@ -236,8 +273,12 @@ const language = {
 		endgame_playAgain: "Rejouer",
 		// Game
 		game_endTurn: "Terminer le tour",
-		game_chooseColor: "Choix de couleur :",
 		game_contest: "Contre-UNA",
+		// Colors
+		color_red: "rouge",
+		color_green: "vert",
+		color_yellow: "jaune",
+		color_blue: "bleu",
 		// Copyright
 		source_code: "Code source",
 	}

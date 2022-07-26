@@ -170,6 +170,11 @@ new Vue({
 			socket.emit('create_room', this.user)
 			this.users = [ this.user ]
 			this.show = 'game-waiting'
+			if (history.pushState) {
+				window.history.pushState(null, "title", "/?" + this.user.roomId)
+			} else {
+				window.history.replaceState(null, "title", "/?" + this.user.roomId)
+			}
 		},
 		joinRoom() {
 			this.setUsername()

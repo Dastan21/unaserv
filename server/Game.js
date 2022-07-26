@@ -18,7 +18,6 @@ class Game {
 		this.maxRound = gamemode.rounds
 		this.maxScore = gamemode.scores
 		this.end = false
-		this.round.updateCards()
 	}
 
 	checkState() {

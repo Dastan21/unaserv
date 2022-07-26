@@ -71,7 +71,7 @@
 						<div class="deck card" :class="{ playable: canDraw() }" v-if="game.round.deck.cards.length > 0" @click="drawCards()"><img class="card-img" src="img/cards/back.svg" alt="UNA? Card"></div>
 					</div>
 					<div class="choice">
-						<span v-if="choosing()">{{translate[language].game_chooseColor}} <button class="button" v-for="color in colors" @click="choose('color', color)">{{color}}</button></span>
+						<span v-if="choosing()"><button class="button" v-for="color in colors" @click="choose('color', color)">{{translate[language][`color_${color}`]}}</button></span>
 						<span v-if="!choosing()"><button class="choice button" @click="endTurn()" :disabled="!canEndTurn()">{{translate[language].game_endTurn}}</button></span>
 						<span v-if="!choosing()"><button class="choice button" @click="sayUno()" :disabled="!canSayUno()">UNA!</button></span>
 					</div>

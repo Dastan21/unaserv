@@ -21,6 +21,7 @@ class Round {
 		this.skip = 0
 		this.hasPlayed = false
 		this.dealingCards()
+		this.updateCards()
 	}
 
 	// deal 7 cards for each player
